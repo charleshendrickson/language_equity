@@ -1,0 +1,71 @@
+---
+title: "explore_data"
+author: "Charles Hendrickson"
+date: "2023-06-08"
+output: html_document
+---
+
+Load Packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(naniar)
+library(janitor)
+library(here)
+library(readxl)
+options(scipen = 99)
+```
+
+Load Data
+```{r}
+census_data <- read_excel(here("data/census_data.xls"))
+```
+Tidy Data
+```{r}
+#Delete rows before the third row
+census_data <- census_data %>% row_to_names(row_number = 4)
+
+#clean column names
+census_data <- clean_names(census_data)
+
+#Pivot longer
+census_data <- census_data %>%
+  pivot_longer(-detailed_household_language, names_to = "state", values_to = "number_of_speakers")
+
+#Filter data
+census_data <- filter(census_data, detailed_household_language != "-> Total")
+
+```
+
+Add Columns
+```{r}
+census_data <- filter(census_data, state != "total")
+```
+
+
+```{r}
+census_data$number_of_speakers <- as.numeric(census_data$number_of_speakers)
+
+census_data <- census_data %>% group_by(detailed_household_language) %>% mutate(sum_per_language = sum(number_of_speakers))
+
+census_data <- census_data %>% mutate(percent_speakers_in_state = number_of_speakers/sum_per_language)
+
+```
+
+
+```{r}
+census_data <- census_data %>% group_by(state) %>% mutate(speakers_per_state = sum(number_of_speakers))
+
+census_data <- census_data %>% 
+  mutate(percent_of_state_speaking = number_of_speakers/speakers_per_state)
+
+```
+
+
+
+
+
+
+
+
+
