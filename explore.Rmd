@@ -25,39 +25,49 @@ Tidy Data
 #Delete rows before the third row
 census_data <- census_data %>% row_to_names(row_number = 4)
 
-#clean column names
+#Clean column names
 census_data <- clean_names(census_data)
+
+#Rename column
+census_data <- census_data %>% 
+       rename("household_language" = "detailed_household_language")
 
 #Pivot longer
 census_data <- census_data %>%
-  pivot_longer(-detailed_household_language, names_to = "state", values_to = "number_of_speakers")
+  pivot_longer(-household_language, names_to = "state", values_to = "speakers")
 
 #Filter data
-census_data <- filter(census_data, detailed_household_language != "-> Total")
+census_data <- filter(census_data, household_language != "-> Total")
 
 ```
 
-Add Columns
+Filter to remove rows
 ```{r}
+#Remove all rows for total number of speakers for all states
 census_data <- filter(census_data, state != "total")
 ```
 
 
 ```{r}
-census_data$number_of_speakers <- as.numeric(census_data$number_of_speakers)
+#Make data type numeric
+census_data$speakers <- as.numeric(census_data$speakers)
 
-census_data <- census_data %>% group_by(detailed_household_language) %>% mutate(sum_per_language = sum(number_of_speakers))
+#Calculate the number of speakers for each language
+census_data <- census_data %>% group_by(household_language) %>% mutate(total_speakers_by_language = sum(speakers))
 
-census_data <- census_data %>% mutate(percent_speakers_in_state = number_of_speakers/sum_per_language)
+#Find the percent of speakers for each state
+census_data <- census_data %>% mutate(percent_speakers = speakers/total_speakers_by_language)
 
 ```
 
 
 ```{r}
-census_data <- census_data %>% group_by(state) %>% mutate(speakers_per_state = sum(number_of_speakers))
+#Total number of speakers in the state
+census_data <- census_data %>% group_by(state) %>% mutate(total_speakers_by_state = sum(speakers))
 
+#Percent of that state that speaks the language
 census_data <- census_data %>% 
-  mutate(percent_of_state_speaking = number_of_speakers/speakers_per_state)
+  mutate(percent_speakers_by_state = speakers/total_speakers_by_state)
 
 ```
 
