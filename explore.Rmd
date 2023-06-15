@@ -26,12 +26,9 @@ Tidy Data
 #Delete rows before the third row
 census_data <- census_data %>% row_to_names(row_number = 4)
 
-#Clean column names
-census_data <- clean_names(census_data)
-
 #Rename column
 census_data <- census_data %>% 
-       rename("household_language" = "detailed_household_language")
+       rename("household_language" = "Detailed household language")
 
 #Pivot longer
 census_data <- census_data %>%
@@ -45,7 +42,7 @@ census_data <- filter(census_data, household_language != "-> Total")
 Filter rows and remove missing values
 ```{r}
 #Remove all rows for total number of speakers for all states
-census_data <- filter(census_data, state != "total")
+census_data <- filter(census_data, state != "Total")
 
 #Remove missing values
 census_data <- filter(census_data, household_language != "N/A (GQ/vacant)")
@@ -60,8 +57,7 @@ census_data$speakers <- as.numeric(census_data$speakers)
 census_data <- census_data %>% group_by(household_language) %>% mutate(total_speakers_by_language = sum(speakers))
 
 #Find the percent of speakers for each state
-census_data <- census_data %>% mutate(percent_speakers = speakers/total_speakers_by_language)
-
+census_data <- census_data %>% mutate(percent_speakers = speakers/total_speakers_by_language*100)
 ```
 
 
@@ -70,12 +66,22 @@ census_data <- census_data %>% mutate(percent_speakers = speakers/total_speakers
 census_data <- census_data %>% group_by(state) %>% mutate(total_speakers_by_state = sum(speakers))
 
 #Percent of that state that speaks the language
-census_data <- census_data %>% 
-  mutate(percent_speakers_by_state = speakers/total_speakers_by_state)
+census_data <- census_data %>%
+  mutate(percent_speakers_by_state = speakers/total_speakers_by_state*100)
 
 ```
 
+Round to two decimal places
+```{r}
+#Round percentages to two decimal places
+census_data <- census_data %>% mutate(across(where(is.numeric), ~ round(., digits = 2)))
+```
 
+Export the dataframe to CSV
+```{r}
+write.csv(census_data,
+          "final_census_data.csv", row.names=FALSE)
+```
 
 
 
