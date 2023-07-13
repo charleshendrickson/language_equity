@@ -1,0 +1,74 @@
+---
+title: "updated_data_exploration"
+author: "Charles Hendrickson"
+date: "2023-07-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(here)
+library(naniar)
+library(visdat)
+library(janitor)
+```
+
+Read in data
+```{r}
+lang_app_data <- read_csv(here("data/LangAppData.csv"))
+```
+
+Explore missing data
+```{r}
+vis_dat(lang_app_data)
+```
+
+Clean and prepare data
+```{r}
+#made column names lowercase
+lang_app_data <- clean_names(lang_app_data)
+
+#rename columns 
+lang_app_data <- lang_app_data %>%
+         rename("household_language" = "lanp_label",
+                "state" = "st_label",
+                "speak_english" = "eng_label",
+                "speakers" = "n")
+
+#create new column for state abbreviations
+lang_app_data <- lang_app_data %>% separate(col = state, into = c("state", "state_abb"), sep = "/")
+
+#check data type of columns
+summary(lang_app_data)
+```
+
+Get stats on languages and make new columns
+```{r}
+#Create new column of the total number of speakers of each language
+lang_app_data <- lang_app_data %>% 
+                 group_by(household_language) %>% 
+                 mutate(total_speakers_of_language = sum(speakers))
+
+
+#write.csv(lang_app_data,
+          #"lang_app_data.csv", row.names=FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
