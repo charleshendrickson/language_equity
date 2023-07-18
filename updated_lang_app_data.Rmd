@@ -49,8 +49,10 @@ Get stats on languages and make new columns
 #Create new column of the total number of speakers of each language
 lang_app_data <- lang_app_data %>% 
                  group_by(household_language) %>% 
-                 mutate(total_speakers_of_language = sum(speakers))
+                 mutate(total_speakers_of_language_in_us = sum(speakers))
 
+#Find the percent of speakers for each state
+lang_app_data <- lang_app_data %>% mutate(percentage_speakers_in_state = speakers/total_speakers_of_language_in_us*100)
 
 #write.csv(lang_app_data,
           #"lang_app_data.csv", row.names=FALSE)
