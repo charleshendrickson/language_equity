@@ -65,7 +65,7 @@ census_data <- census_data %>% mutate(percent_speakers = speakers/total_speakers
 #Total number of speakers in the state
 census_data <- census_data %>% group_by(state) %>% mutate(total_speakers_by_state = sum(speakers))
 
-#Percent of that state that speaks the language
+#Percent of state that speaks the language
 census_data <- census_data %>%
   mutate(percent_speakers_by_state = speakers/total_speakers_by_state*100)
 

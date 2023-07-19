@@ -13,6 +13,9 @@ library(here)
 library(naniar)
 library(visdat)
 library(janitor)
+
+#Turn off scientific notation as global setting
+options(scipen=999)
 ```
 
 Read in data
@@ -42,6 +45,8 @@ lang_app_data <- lang_app_data %>% separate(col = state, into = c("state", "stat
 
 #check data type of columns
 summary(lang_app_data)
+
+#Remove 'state_abb' column becuase it is unnecessary
 ```
 
 Get stats on languages and make new columns
@@ -54,14 +59,32 @@ lang_app_data <- lang_app_data %>%
 #Find the percent of speakers for each state
 lang_app_data <- lang_app_data %>% mutate(percentage_speakers_in_state = speakers/total_speakers_of_language_in_us*100)
 
-#write.csv(lang_app_data,
-          #"lang_app_data.csv", row.names=FALSE)
+#Find the population of individuals with household language that is not English 
+lang_app_data <- lang_app_data %>% group_by(state) %>% mutate(state_pop_of_non_english_households = sum(speakers))
+
+#Find Percent of State Pop. Speaking Language
+lang_app_data <- lang_app_data %>% mutate(percent_state_pop_speaking_language = speakers/state_pop_of_non_english_households*100)
 ```
 
 
+Sanity Check: Explore data on a specific Language in a State
+```{r}
+#Explore Spanish in California
+test <- lang_app_data %>% filter(household_language == "Spanish" & state == "California")
+```
 
 
+Round to two decimal places
+```{r}
+#Round percentages to two decimal places
+lang_app_data <- lang_app_data %>% mutate(across(where(is.numeric), ~ round(., digits = 2)))
+```
 
+```{r}
+#Create CSV of dataframe 
+#write.csv(lang_app_data,
+          #"lang_app_data.csv", row.names=FALSE)
+```
 
 
 
