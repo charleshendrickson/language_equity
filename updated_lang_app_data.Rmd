@@ -71,15 +71,47 @@ lang_app_data <- lang_app_data %>% mutate(percent_state_pop_speaking_language = 
 Sanity Check: Explore data on a specific Language in a State
 ```{r}
 #Explore Spanish in California
-test <- lang_app_data %>% filter(household_language == "Spanish" & state == "California")
+#test <- lang_app_data %>% filter(household_language == "Spanish" & state == "California")
 ```
 
 
 Round to two decimal places
 ```{r}
 #Round percentages to two decimal places
-lang_app_data <- lang_app_data %>% mutate(across(where(is.numeric), ~ round(., digits = 2)))
+#lang_app_data <- lang_app_data %>% mutate(across(where(is.numeric), ~ round(., digits = 2)))
 ```
+
+This function rounds numbers less than 1 to two decimal places after the first one-digit natural number, and rounds numbers greater than or equal to 1 to two decimal places. 
+
+(*This is so that values smaller than 0.00 are not rounded to 0, which would make the user think no people speak the language.)
+```{r}
+# Function: custom_round
+# Description: Rounds numbers less than 1 to two decimal places after the first one-digit natural number,
+#              and rounds numbers greater than or equal to 1 to two decimal places.
+#
+# Arguments:
+#   x: A numeric vector containing the values to be rounded.
+#
+# Returns:
+#   A numeric vector with the rounded values.
+#
+# Example:
+#   custom_round(c(0.12345, 0.98765, 1.234567, 9.876543))
+#   Output: 0.13 0.99 1.23 9.88
+
+custom_round <- function(x) {
+  rounded_values <- ifelse(x < 1,
+                           round(x, digits = 2 - floor(log10(abs(x)))),
+                           round(x, digits = 2))
+  return(rounded_values)
+}
+```
+
+
+```{r}
+test <- data.frame(custom_round(lang_app_data$percentage_speakers_in_state))
+```
+
 
 ```{r}
 #Create CSV of dataframe 
