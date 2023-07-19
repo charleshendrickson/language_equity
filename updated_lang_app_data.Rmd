@@ -46,7 +46,8 @@ lang_app_data <- lang_app_data %>% separate(col = state, into = c("state", "stat
 #check data type of columns
 summary(lang_app_data)
 
-#Remove 'state_abb' column becuase it is unnecessary
+#Remove 'state_abb' column because it is unnecessary
+lang_app_data <- lang_app_data %>% select(!state_abb)
 ```
 
 Get stats on languages and make new columns
