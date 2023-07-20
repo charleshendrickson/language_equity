@@ -99,17 +99,17 @@ This function rounds numbers less than 1 to two decimal places after the first o
 #   custom_round(c(0.12345, 0.98765, 1.234567, 9.876543))
 #   Output: 0.13 0.99 1.23 9.88
 
-custom_round <- function(x) {
-  rounded_values <- ifelse(x < 1,
-                           round(x, digits = 2 - floor(log10(abs(x)))),
-                           round(x, digits = 2))
-  return(rounded_values)
-}
+#custom_round <- function(x) {
+  #rounded_values <- ifelse(x < 1,
+                           #round(x, digits = 2 - floor(log10(abs(x)))),
+                           #round(x, digits = 2))
+  #return(rounded_values)
+#}
 ```
 
-
+Test the function above
 ```{r}
-test <- data.frame(custom_round(lang_app_data$percentage_speakers_in_state))
+#test <- data.frame(custom_round(lang_app_data$percentage_speakers_in_state))
 ```
 
 
