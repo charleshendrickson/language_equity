@@ -114,6 +114,13 @@ Test the function above
 
 
 ```{r}
+test <- lang_app_data %>% filter(household_language == "Spanish",
+                                 state == "California",
+                                 speak_english == "Well")
+```
+
+
+```{r}
 #Create CSV of dataframe 
 #write.csv(lang_app_data,
           #"lang_app_data.csv", row.names=FALSE)
