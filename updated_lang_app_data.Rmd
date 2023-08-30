@@ -114,9 +114,35 @@ Test the function above
 
 
 ```{r}
-test <- lang_app_data %>% filter(household_language == "Spanish",
-                                 state == "California",
-                                 speak_english == "Well")
+#test <- lang_app_data %>% filter(household_language == "Spanish",
+                                 #state == "California",
+                                 #speak_english == "Well")
+```
+
+Add state abbreviation
+```{r}
+# Create a data frame with state names and abbreviations
+state_abbreviations <- data.frame(
+  state = c("Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado",
+             "Connecticut", "District of Columbia", "Delaware", "Florida", "Georgia",
+             "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky",
+             "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota",
+             "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota",
+             "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada",
+             "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island",
+             "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia",
+             "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"),
+  state_abbreviation = c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL",
+                         "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA",
+                         "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE",
+                         "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI",
+                         "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")
+)
+
+# Assuming "census_data" is your existing data frame
+lang_app_data <- lang_app_data %>%
+  left_join(state_abbreviations, by = "state")
+
 ```
 
 
@@ -125,6 +151,7 @@ test <- lang_app_data %>% filter(household_language == "Spanish",
 #write.csv(lang_app_data,
           #"lang_app_data.csv", row.names=FALSE)
 ```
+
 
 
 
