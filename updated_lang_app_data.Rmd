@@ -78,17 +78,18 @@ Sanity Check: Explore data on a specific Language in a State
 Round to two decimal places
 ```{r}
 #Round percentages to two decimal places
-#lang_app_data <- lang_app_data %>% mutate(across(where(is.numeric), ~ round(., digits = 2)))
+lang_app_data <- lang_app_data %>% mutate(across(where(is.numeric), ~ round(., digits = 4)))
 ```
 
 This function rounds numbers less than 1 to two decimal places after the first one-digit natural number, and rounds numbers greater than or equal to 1 to two decimal places. 
 
 (*This is so that values smaller than 0.00 are not rounded to 0, which would make the user think no people speak the language.)
 ```{r}
-# Function: custom_round
-# Description: Rounds numbers less than 1 to two decimal places after the first one-digit natural number,
-#              and rounds numbers greater than or equal to 1 to two decimal places.
-#
+#Function: custom_round
+
+#Description: Rounds numbers less than 1 to two decimal places after the first one-digit natural number,
+              #and rounds numbers greater than or equal to 1 to two decimal places.
+
 # Arguments:
 #   x: A numeric vector containing the values to be rounded.
 #
@@ -99,12 +100,12 @@ This function rounds numbers less than 1 to two decimal places after the first o
 #   custom_round(c(0.12345, 0.98765, 1.234567, 9.876543))
 #   Output: 0.13 0.99 1.23 9.88
 
-#custom_round <- function(x) {
-  #rounded_values <- ifelse(x < 1,
-                           #round(x, digits = 2 - floor(log10(abs(x)))),
-                           #round(x, digits = 2))
-  #return(rounded_values)
-#}
+# custom_round <- function(x) {
+#   rounded_values <- ifelse(x < 1,
+#                            round(x, digits = 2 - floor(log10(abs(x)))),
+#                            round(x, digits = 2))
+#   return(rounded_values)
+# }
 ```
 
 Test the function above
@@ -117,6 +118,25 @@ Test the function above
 #test <- lang_app_data %>% filter(household_language == "Spanish",
                                  #state == "California",
                                  #speak_english == "Well")
+```
+
+
+```{r}
+#Add commas to thousandth place in speakers column
+lang_app_data <- lang_app_data %>%
+  mutate(speakers = format(speakers, big.mark = ","))
+```
+
+```{r}
+#Add commas to thousandth place in total_speakers_of_language_in_us column
+lang_app_data <- lang_app_data %>%
+  mutate(total_speakers_of_language_in_us = format(total_speakers_of_language_in_us, big.mark = ","))
+```
+
+```{r}
+#Add commas to thousandth place in state_pop_of_non_english_households column
+lang_app_data <- lang_app_data %>%
+  mutate(state_pop_of_non_english_households = format(state_pop_of_non_english_households, big.mark = ","))
 ```
 
 Add state abbreviation
